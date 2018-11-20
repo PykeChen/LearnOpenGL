@@ -1,7 +1,10 @@
 package com.astana.learnopengl
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import com.astana.learnopengl.drawTriangle.GLDrawTriangle
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +15,12 @@ class MainActivity : AppCompatActivity() {
 
         // Example of a call to a native method
         sample_text.text = stringFromJNI()
+    }
+
+
+    fun gotoGLTriangleDraw(view: View) {
+        val intent = Intent(this, GLDrawTriangle::class.java)
+        startActivity(intent)
     }
 
     /**
