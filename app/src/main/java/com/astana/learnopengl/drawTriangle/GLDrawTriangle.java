@@ -29,7 +29,16 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
             -1.0f, -1.0f, 0f,// bottom left
             1.0f, -1.0f, 0f  // bottom right
     };
+
+    //各个顶点的颜色值
+    float mColorCoords[] = {
+            1.0f, 0.0f, 0.0f, 1.0f, // top
+            0.0f, 1.0f, 0f, 1.0f,// bottom left
+            0.0f, 0.0f, 1.0f, 1.0f  // bottom right
+    };
+
     private FloatBuffer mVertexBuffer;
+    private FloatBuffer mColorBuffer;
     private int mShaderProgram = -1;
 
     float color[] = {1.0f, 0.0f, 0.0f, 1.0f}; //白色
@@ -61,6 +70,7 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
         //做一些初始化的事情
         //createBuffer,创建FBO
         mVertexBuffer = GLCommonUtils.createBuffer(mTriangleCoords);
+        mColorBuffer = GLCommonUtils.createBuffer(mColorCoords);
 
         //加载编译程序
         String fragmentStrRes = CommonUtils.readShaderFromResource(this, R.raw.triangle_fragment_shader);
@@ -96,6 +106,14 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
         //指定vMatrix的值
         GLES20.glUniformMatrix4fv(matrixHandler, 1, false, mMVPMatrix, 0);
 
+        //获取顶点着色器的aColor句柄
+        int aColorHandler = GLES20.glGetAttribLocation(mShaderProgram, "aColor");
+        //启动三角形顶点的颜色句柄-不启动则没有效果
+        GLES20.glEnableVertexAttribArray(aColorHandler);
+        //指定aColor的值
+        GLES20.glVertexAttribPointer(aColorHandler, 4, GLES20.GL_FLOAT, false, 4 * SIZEOF_FLOAT, mColorBuffer);
+
+
         //获取顶点着色器的vPosition成员句柄
         int positionHandler = GLES20.glGetAttribLocation(mShaderProgram, "vPosition");
         //启用三角形顶点的句柄
@@ -103,15 +121,17 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
         //准备三角形的坐标数据
         GLES20.glVertexAttribPointer(positionHandler, 3, GLES20.GL_FLOAT, false, 3 * SIZEOF_FLOAT, mVertexBuffer);
 
-        //获取片元着色器的vColor成员的句柄
-        int colorHandler = GLES20.glGetUniformLocation(mShaderProgram, "vColor");
-        //设置绘制三角形的颜色
-        GLES20.glUniform4fv(colorHandler, 1, color, 0);
+//        //获取片元着色器的vColor成员的句柄
+//        int colorHandler = GLES20.glGetUniformLocation(mShaderProgram, "vColor");
+//        //设置绘制三角形的颜色
+//        GLES20.glUniform4fv(colorHandler, 1, color, 0);
 
         //绘制三角形
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
 
 //        //禁止顶点数组的句柄
         GLES20.glDisableVertexAttribArray(positionHandler);
+        //禁止顶点数组的句柄--用来测试
+        GLES20.glDisableVertexAttribArray(aColorHandler);
     }
 }
