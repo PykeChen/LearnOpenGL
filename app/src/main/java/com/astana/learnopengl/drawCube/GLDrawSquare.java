@@ -25,42 +25,30 @@ import java.nio.ShortBuffer;
  * @version:
  * @date: 2018/11/20
  */
-public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Renderer{
+public class GLDrawSquare extends AppCompatActivity implements GLSurfaceView.Renderer{
 
     private static final int SIZEOF_FLOAT = 4;
 
-    float mCubePositions[] = {
-            -1.0f,1.0f,1.0f,    //正面左上0
-            -1.0f,-1.0f,1.0f,   //正面左下1
-            1.0f,-1.0f,1.0f,    //正面右下2
-            1.0f,1.0f,1.0f,     //正面右上3
-            -1.0f,1.0f,-1.0f,    //反面左上4
-            -1.0f,-1.0f,-1.0f,   //反面左下5
-            1.0f,-1.0f,-1.0f,    //反面右下6
-            1.0f,1.0f,-1.0f,     //反面右上7
+    float mTriangleCoords[] = {
+            -1.0f, 1.0f, 0f, // top left
+            -1.0f, -1.0f, 0f,// bottom left
+            1.0f, -1.0f, 0f,  // bottom right
+            1.0f, 1.0f, 0f  // bottom top
     };
 
     //各个顶点的颜色值
     float mColorCoords[] = {
-            0f,1f,0f,1f,
-            0f,1f,0f,1f,
-            0f,1f,0f,1f,
-            0f,1f,0f,1f,
-            1f,0f,0f,1f,
-            1f,0f,0f,1f,
-            1f,0f,0f,1f,
-            1f,0f,0f,1f,
+            1.0f, 0.0f, 0.0f, 1.0f, // top left
+            0.0f, 1.0f, 0f, 1.0f,// bottom left
+            0.0f, 0.0f, 1.0f, 1.0f,   // bottom right
+            0.0f, 1.0f, 1.0f, 1.0f  // bottom top
     };
 
 
     //绘制顶点的索引-逆时针索引
     short mIndices[] = {
-            6,7,4,6,4,5,    //后面
-            6,3,7,6,2,3,    //右面
-            6,5,1,6,1,2,    //下面
-            0,1,2,0,2,3,    //正面
-            0,1,5,0,5,4,    //左面
-            0,7,3,0,4,7,    //上面
+            0, 2, 1, // 左下角三角形
+            0, 2, 3 //右上角三角形
     };
 
     private FloatBuffer mVertexBuffer;
@@ -71,15 +59,6 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
     float[] mProjectMatrix = new float[16];
     float[] mViewMatrix = new float[16];
     float[] mMVPMatrix = new float[16];
-
-    //每个顶点的坐标个数
-    private final int COORDS_PER_VERTEX = 3;
-    //每个顶点的颜色值个数
-    private final int COLORS_PER_VERTEX = 4;
-    //顶点个数
-    private final int mVertexCount = mCubePositions.length / COORDS_PER_VERTEX;
-    //顶点之间的偏移量
-    private final int mVertexStride = COORDS_PER_VERTEX * SIZEOF_FLOAT; // 每个顶点四个字节
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,9 +78,6 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        //开启深度测试才行,不然平面
-        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-
         //设置背景色（r,g,b,a）
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         //-------------演示顺时针还是逆时针以及正面背面剔除---
@@ -112,7 +88,7 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
 
         //做一些初始化的事情
         //createBuffer,创建FBO
-        mVertexBuffer = GLCommonUtils.createBuffer(mCubePositions);
+        mVertexBuffer = GLCommonUtils.createBuffer(mTriangleCoords);
         mColorBuffer = GLCommonUtils.createBuffer(mColorCoords);
         mIndicesBuffer = GLCommonUtils.createBuffer(mIndices);
 
@@ -133,9 +109,9 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
         //设置宽高比
         float radio = (float) width / height;
         //设置透视投影
-        Matrix.frustumM(mProjectMatrix, 0, -radio, radio, -1, 1, 3, 20);
+        Matrix.frustumM(mProjectMatrix, 0, -radio, radio, -1, 1, 3, 5);
         //设置相机置
-        Matrix.setLookAtM(mViewMatrix, 0, 5, 5, 10.0f, 0, 0, 0, 0, 1, 0);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 5.0f, 0, 0, 0, 0, 1, 0);
         //计算得到变换矩阵
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectMatrix, 0, mViewMatrix, 0);
     }
@@ -143,7 +119,7 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
     @Override
     public void onDrawFrame(GL10 gl) {
         //重绘背景色,如果不设置这个BUFFER_BIT的话,上面onSurfaceCreate#glClearColor下次不生效
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 //        GLES20.glClearColor(1.0f, 1.0f, 0.0f, 1.0f);
         //获取顶点着色器的vMatrix成员句柄
         int matrixHandler = GLES20.glGetUniformLocation(mShaderProgram, "vMatrix");
@@ -155,18 +131,19 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
         //启动三角形顶点的颜色句柄-不启动则没有效果
         GLES20.glEnableVertexAttribArray(aColorHandler);
         //指定aColor的值
-        GLES20.glVertexAttribPointer(aColorHandler, COLORS_PER_VERTEX, GLES20.GL_FLOAT, false, COLORS_PER_VERTEX * SIZEOF_FLOAT, mColorBuffer);
+        GLES20.glVertexAttribPointer(aColorHandler, 4, GLES20.GL_FLOAT, false, 4 * SIZEOF_FLOAT, mColorBuffer);
 
 
         //获取顶点着色器的vPosition成员句柄
         int positionHandler = GLES20.glGetAttribLocation(mShaderProgram, "vPosition");
         //启用三角形顶点的句柄
         GLES20.glEnableVertexAttribArray(positionHandler);
-        //准备三角形的坐标数据, 第二个参数,每个顶点3个坐标
-        GLES20.glVertexAttribPointer(positionHandler, COORDS_PER_VERTEX, GLES20.GL_FLOAT, false, COORDS_PER_VERTEX * SIZEOF_FLOAT, mVertexBuffer);
+        //准备三角形的坐标数据
+        GLES20.glVertexAttribPointer(positionHandler, 3, GLES20.GL_FLOAT, false, 3 * SIZEOF_FLOAT, mVertexBuffer);
 
-        //索引法绘制立方体
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_SHORT, mIndicesBuffer);
+        //绘制三角形
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
+//        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_SHORT, mIndicesBuffer);
 
 //        //禁止顶点数组的句柄
         GLES20.glDisableVertexAttribArray(positionHandler);
