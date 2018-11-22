@@ -142,8 +142,8 @@ public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Rende
         GLES20.glVertexAttribPointer(positionHandler, 3, GLES20.GL_FLOAT, false, 3 * SIZEOF_FLOAT, mVertexBuffer);
 
         //绘制三角形
-//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_SHORT, mIndicesBuffer);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, 4);
+//        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_SHORT, mIndicesBuffer);
 
 //        //禁止顶点数组的句柄
         GLES20.glDisableVertexAttribArray(positionHandler);
