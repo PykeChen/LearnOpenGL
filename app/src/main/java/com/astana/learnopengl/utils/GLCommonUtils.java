@@ -9,6 +9,7 @@ import javax.microedition.khronos.opengles.GL10;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import static android.opengl.GLES20.*;
 
@@ -28,6 +29,14 @@ public class GLCommonUtils {
         FloatBuffer buffer = ByteBuffer.allocateDirect(vertexData.length * 4)
                 .order(ByteOrder.nativeOrder())
                 .asFloatBuffer();
+        buffer.put(vertexData, 0, vertexData.length).position(0);
+        return buffer;
+    }
+
+    public static ShortBuffer createBuffer(short[] vertexData) {
+        ShortBuffer buffer = ByteBuffer.allocateDirect(vertexData.length * 2)
+                .order(ByteOrder.nativeOrder())
+                .asShortBuffer();
         buffer.put(vertexData, 0, vertexData.length).position(0);
         return buffer;
     }

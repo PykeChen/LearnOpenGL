@@ -1,4 +1,4 @@
-package com.astana.learnopengl.drawTriangle;
+package com.astana.learnopengl.drawCube;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -13,40 +13,49 @@ import com.astana.learnopengl.utils.GLCommonUtils;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
- * 绘制三角形 编写过程:
- * 1.绘制普通的三角形
- * 2.绘制等腰三角形
- * 3.绘制彩色的等腰三角形
+ * 绘制正方形, 编写过程:
+ * 1.绘制普通的正方形
+ * 2.绘制立方体
  *
  * @author cpy
  * @Description:
  * @version:
  * @date: 2018/11/20
  */
-public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.Renderer{
+public class GLDrawCube extends AppCompatActivity implements GLSurfaceView.Renderer{
 
     private static final int SIZEOF_FLOAT = 4;
 
     float mTriangleCoords[] = {
-            0.0f, 1.0f, 0f, // top
+            -1.0f, 1.0f, 0f, // top left
             -1.0f, -1.0f, 0f,// bottom left
-            1.0f, -1.0f, 0f  // bottom right
+            1.0f, -1.0f, 0f,  // bottom right
+            1.0f, 1.0f, 0f  // bottom top
     };
 
     //各个顶点的颜色值
     float mColorCoords[] = {
-            1.0f, 0.0f, 0.0f, 1.0f, // top
+            1.0f, 0.0f, 0.0f, 1.0f, // top left
             0.0f, 1.0f, 0f, 1.0f,// bottom left
-            0.0f, 0.0f, 1.0f, 1.0f  // bottom right
+            0.0f, 0.0f, 1.0f, 1.0f,   // bottom right
+            0.0f, 1.0f, 1.0f, 1.0f  // bottom top
+    };
+
+
+    //绘制顶点的索引-逆时针索引
+    short mIndices[] = {
+            0, 2, 1, // 左下角三角形
+            0, 2, 3 //右上角三角形
     };
 
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mColorBuffer;
+    private ShortBuffer mIndicesBuffer;
     private int mShaderProgram = -1;
 
-    float color[] = {1.0f, 0.0f, 0.0f, 1.0f}; //白色
     float[] mProjectMatrix = new float[16];
     float[] mViewMatrix = new float[16];
     float[] mMVPMatrix = new float[16];
@@ -71,11 +80,17 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //设置背景色（r,g,b,a）
         GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        //-------------演示顺时针还是逆时针以及正面背面剔除---
+//        GLES20.glFrontFace(GLES20.GL_CCW);
+//        GLES20.glEnable(GLES20.GL_CULL_FACE);
+//        GLES20.glCullFace(GLES20.GL_FRONT);
+        //-------------演示顺时针还是逆时针以及正面背面剔除---
 
         //做一些初始化的事情
         //createBuffer,创建FBO
         mVertexBuffer = GLCommonUtils.createBuffer(mTriangleCoords);
         mColorBuffer = GLCommonUtils.createBuffer(mColorCoords);
+        mIndicesBuffer = GLCommonUtils.createBuffer(mIndices);
 
         //加载编译程序
         String fragmentStrRes = CommonUtils.readShaderFromResource(this, R.raw.triangle_fragment_shader);
@@ -126,13 +141,9 @@ public class GLDrawTriangle extends AppCompatActivity implements GLSurfaceView.R
         //准备三角形的坐标数据
         GLES20.glVertexAttribPointer(positionHandler, 3, GLES20.GL_FLOAT, false, 3 * SIZEOF_FLOAT, mVertexBuffer);
 
-//        //获取片元着色器的vColor成员的句柄
-//        int colorHandler = GLES20.glGetUniformLocation(mShaderProgram, "vColor");
-//        //设置绘制三角形的颜色
-//        GLES20.glUniform4fv(colorHandler, 1, color, 0);
-
         //绘制三角形
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
+//        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mIndices.length, GLES20.GL_UNSIGNED_SHORT, mIndicesBuffer);
 
 //        //禁止顶点数组的句柄
         GLES20.glDisableVertexAttribArray(positionHandler);

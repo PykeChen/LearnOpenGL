@@ -7,10 +7,21 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <Button android:layout_width="wrap_content"
+    <Button
+            android:id="@+id/btn_triangle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="GL_Triangles"
             android:onClick="gotoGLTriangleDraw"
+            />
+
+    <Button
+            android:id="@+id/btn_cube"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GL_Cube"
+            android:onClick="gotoGLCubeDraw"
+            app:layout_constraintTop_toBottomOf="@+id/btn_triangle"
             />
 
     <TextView

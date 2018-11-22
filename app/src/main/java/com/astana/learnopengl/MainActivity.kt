@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.astana.learnopengl.drawCube.GLDrawCube
 import com.astana.learnopengl.drawTriangle.GLDrawTriangle
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -20,6 +21,12 @@ class MainActivity : AppCompatActivity() {
 
     fun gotoGLTriangleDraw(view: View) {
         val intent = Intent(this, GLDrawTriangle::class.java)
+        startActivity(intent)
+    }
+
+
+    fun gotoGLCubeDraw(view: View) {
+        val intent = Intent(this, GLDrawCube::class.java)
         startActivity(intent)
     }
 
