@@ -7,6 +7,7 @@ import android.view.View
 import com.astana.learnopengl.drawCube.GLDrawCube
 import com.astana.learnopengl.drawCube.GLDrawSquare
 import com.astana.learnopengl.drawTriangle.GLDrawTriangle
+import com.astana.learnopengl.texture.DrawTextureRect
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,11 @@ class MainActivity : AppCompatActivity() {
 
     fun gotoGLCubeDraw(view: View) {
         val intent = Intent(this, GLDrawCube::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoGLTextureDraw(view: View) {
+        val intent = Intent(this, DrawTextureRect::class.java)
         startActivity(intent)
     }
 

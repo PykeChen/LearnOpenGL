@@ -33,6 +33,14 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_triangle"
             app:layout_constraintLeft_toRightOf="@+id/btn_square"
             />
+    <Button
+            android:id="@+id/btn_texture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GL_Texture"
+            android:onClick="gotoGLTextureDraw"
+            app:layout_constraintTop_toBottomOf="@+id/btn_square"
+            />
 
     <TextView
         android:id="@+id/sample_text"
