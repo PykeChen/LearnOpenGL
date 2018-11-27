@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import com.astana.learnopengl.BaseActivity;
 import com.astana.learnopengl.R;
 import com.astana.learnopengl.utils.CommonUtils;
 import com.astana.learnopengl.utils.GLCommonUtils;
@@ -25,7 +25,7 @@ import java.nio.ShortBuffer;
  * @version:
  * @date: 2018/11/20
  */
-public class GLDrawSquare extends AppCompatActivity implements GLSurfaceView.Renderer{
+public class GLDrawSquare extends BaseActivity implements GLSurfaceView.Renderer{
 
     private static final int SIZEOF_FLOAT = 4;
 

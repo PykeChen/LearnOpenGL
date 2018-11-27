@@ -3,11 +3,10 @@ package com.astana.learnopengl.texture;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import com.astana.learnopengl.BaseActivity;
 import com.astana.learnopengl.R;
 import com.astana.learnopengl.utils.BitmapUtils;
 import com.astana.learnopengl.utils.CommonUtils;
@@ -27,7 +26,7 @@ import java.nio.ShortBuffer;
  * @version:
  * @date: 2018/11/23
  */
-public class DrawTextureRect extends AppCompatActivity implements GLSurfaceView.Renderer {
+public class DrawTextureRect extends BaseActivity implements GLSurfaceView.Renderer {
 
     private static final int SIZEOF_FLOAT = 4;
 
@@ -114,22 +113,15 @@ public class DrawTextureRect extends AppCompatActivity implements GLSurfaceView.
         //设置窗口
         GLES20.glViewport(0, 0, width, height);
 
-        int w = mTextureBitmap.getWidth();
-        int h = mTextureBitmap.getHeight();
-        float sWH = w / (float) h;
-        float sWidthHeight = width / (float) height;
+        int bitmapWidth = mTextureBitmap.getWidth();
+        int bitmapHeight = mTextureBitmap.getHeight();
+
         if (width > height) {
-            if (sWH > sWidthHeight) {
-                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight * sWH, sWidthHeight * sWH, -1, 1, 3, 7);
-            } else {
-                Matrix.orthoM(mProjectMatrix, 0, -sWidthHeight / sWH, sWidthHeight / sWH, -1, 1, 3, 7);
-            }
+            float x = width / ((float) height / bitmapHeight * bitmapWidth);
+            Matrix.orthoM(mProjectMatrix, 0, -x, x, -1, 1, 3, 7);
         } else {
-            if (sWH > sWidthHeight) {
-                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -1 / sWidthHeight * sWH, 1 / sWidthHeight * sWH, 3, 7);
-            } else {
-                Matrix.orthoM(mProjectMatrix, 0, -1, 1, -sWH / sWidthHeight, sWH / sWidthHeight, 3, 7);
-            }
+            float y = height / ((float) width / bitmapWidth * bitmapHeight);
+            Matrix.orthoM(mProjectMatrix, 0, -1, 1, -y, y, 3, 7);
         }
 
         //设置相机置

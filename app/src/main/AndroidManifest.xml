@@ -23,6 +23,7 @@
         <activity android:name=".drawCube.GLDrawSquare" android:screenOrientation="portrait"/>
         <activity android:name=".drawCube.GLDrawCube" android:screenOrientation="portrait"/>
         <activity android:name=".texture.DrawTextureRect" android:screenOrientation="portrait"/>
+        <activity android:name=".camPreview.CameraActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

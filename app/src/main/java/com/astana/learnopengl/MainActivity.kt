@@ -4,6 +4,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.astana.learnopengl.camPreview.CameraActivity
 import com.astana.learnopengl.drawCube.GLDrawCube
 import com.astana.learnopengl.drawCube.GLDrawSquare
 import com.astana.learnopengl.drawTriangle.GLDrawTriangle
@@ -38,6 +39,11 @@ class MainActivity : AppCompatActivity() {
 
     fun gotoGLTextureDraw(view: View) {
         val intent = Intent(this, DrawTextureRect::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoNormalCameraPreview(view: View) {
+        val intent = Intent(this, CameraActivity::class.java)
         startActivity(intent)
     }
 

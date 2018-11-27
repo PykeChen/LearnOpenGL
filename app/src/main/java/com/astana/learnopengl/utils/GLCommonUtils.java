@@ -114,6 +114,26 @@ public class GLCommonUtils {
         GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
         return texture[0];
     }
+
+    /**
+     * 创建绑定外部纹理的id
+     *
+     * Android的Camera及Camera2都允许使用SurfaceTexture作为预览载体，但是它们所使用的SurfaceTexture传入的OpenGL texture object
+     * name必须为GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+     * @return
+     */
+    public static int createExternalTexture(){
+        int[] texture = new int[1];
+        //创建的是扩展纹理，所以绑定的时候我们也需要绑定到扩展纹理上才可以正常使用
+        GLES20.glGenBuffers(1, texture, 0);
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
+        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
+        return texture[0];
+    }
+
     /**
      * 创建指定bitmap的纹理对象,返回生成的纹理id
      *
