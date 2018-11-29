@@ -40,6 +40,16 @@ public class MatrixUtils {
         }
     }
 
+    /**
+     * 根据指定参数获得type类型效果的矩阵
+     *
+     * @param matrix
+     * @param type
+     * @param imgWidth
+     * @param imgHeight
+     * @param viewWidth
+     * @param viewHeight
+     */
     public static void getMatrix(float[] matrix, int type, int imgWidth, int imgHeight, int viewWidth,
                                  int viewHeight) {
         if (imgHeight > 0 && imgWidth > 0 && viewWidth > 0 && viewHeight > 0) {
@@ -88,6 +98,15 @@ public class MatrixUtils {
         }
     }
 
+    /**
+     * 根据指定参数获得centerInside效果的矩阵
+     *
+     * @param matrix
+     * @param imgWidth
+     * @param imgHeight
+     * @param viewWidth
+     * @param viewHeight
+     */
     public static void getCenterInsideMatrix(float[] matrix, int imgWidth, int imgHeight, int viewWidth, int
             viewHeight) {
         if (imgHeight > 0 && imgWidth > 0 && viewWidth > 0 && viewHeight > 0) {
@@ -110,6 +129,14 @@ public class MatrixUtils {
         return m;
     }
 
+    /**
+     * 翻转矩阵
+     *
+     * @param m
+     * @param x
+     * @param y
+     * @return
+     */
     public static float[] flip(float[] m, boolean x, boolean y) {
         if (x || y) {
             Matrix.scaleM(m, 0, x ? -1 : 1, y ? -1 : 1, 1);
@@ -117,11 +144,24 @@ public class MatrixUtils {
         return m;
     }
 
+    /**
+     * 缩放
+     *
+     * @param m
+     * @param x
+     * @param y
+     * @return
+     */
     public static float[] scale(float[] m, float x, float y) {
         Matrix.scaleM(m, 0, x, y, 1);
         return m;
     }
 
+    /**
+     * 获得原始矩阵
+     *
+     * @return
+     */
     public static float[] getOriginalMatrix() {
         return new float[]{
                 1, 0, 0, 0,

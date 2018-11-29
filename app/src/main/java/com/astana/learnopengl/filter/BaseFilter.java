@@ -1,8 +1,6 @@
 package com.astana.learnopengl.filter;
 
 import android.opengl.GLES20;
-import android.opengl.GLU;
-import android.opengl.GLUtils;
 import android.util.Log;
 import com.astana.learnopengl.BuildConfig;
 import com.astana.learnopengl.utils.GlUtil;
@@ -244,5 +242,9 @@ public abstract class BaseFilter {
 
     public final int getTextureType() {
         return textureType;
+    }
+
+    public void setMatrix(float[] matrix){
+        this.matrix = matrix;
     }
 }

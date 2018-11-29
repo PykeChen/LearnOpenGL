@@ -1,14 +1,12 @@
 package com.astana.learnopengl.camPreview.view;
 
 import android.content.Context;
-import android.graphics.SurfaceTexture;
-import android.opengl.GLES20;
+import android.graphics.Point;
+import android.hardware.Camera;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import com.astana.learnopengl.camPreview.CameraSurfaceTextureRender;
 import com.astana.learnopengl.camPreview.camera.KitkatCamera;
-import com.astana.learnopengl.filter.BaseFilter;
-import com.astana.learnopengl.filter.OESFilter;
-import com.astana.learnopengl.utils.GLCommonUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,14 +19,12 @@ import javax.microedition.khronos.opengles.GL10;
  * @version:
  * @date: 2018/11/27
  */
-public class CameraView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class CameraView extends GLSurfaceView implements GLSurfaceView.Renderer, CameraSurfaceTextureRender.RenderCallback {
 
     private KitkatCamera mCamera;
-    //后置摄像头cameraId
-    private int cameraId = 1;
-
-    private SurfaceTexture mSurfaceTexture;
-    private BaseFilter mFilter;
+    //前置摄像头cameraId
+    private int cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+    private CameraSurfaceTextureRender mRender;
 
     public CameraView(Context context) {
         super(context);
@@ -46,48 +42,32 @@ public class CameraView extends GLSurfaceView implements GLSurfaceView.Renderer 
         setRenderer(this);
         setRenderMode(RENDERMODE_WHEN_DIRTY);
         mCamera = new KitkatCamera();
-        mFilter = new OESFilter();
+        mRender = new CameraSurfaceTextureRender();
+        mRender.init(this);
     }
-
-    private void initGLSurfaceView() {
-        int texture = GLCommonUtils.createExternalTexture();
-        //Construct a new SurfaceTexture to stream images to a given OpenGL texture.
-        // 构造一个surfaceTexture将surface的图像流传递给指定的openGL纹理
-        mSurfaceTexture = new SurfaceTexture(texture);
-        mSurfaceTexture.setOnFrameAvailableListener(new SurfaceTexture.OnFrameAvailableListener() {
-            @Override
-            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                requestRender();
-            }
-        });
-        //创建Program
-        mFilter.create();
-        mFilter.setTextureId(texture);
-    }
-
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         //初始化gl相关
-        initGLSurfaceView();
+        mRender.onSurfaceCreated();
         //开启相机
         mCamera.open(cameraId);
-        mCamera.setPreviewTexture(mSurfaceTexture);
+        mRender.setIsFontCamera(cameraId == Camera.CameraInfo.CAMERA_FACING_FRONT);
+        Point point = mCamera.getPreviewSize();
+        mRender.setPreviewPicSize(point.x, point.y);
+        mCamera.setPreviewTexture(mRender.getSurfaceTexture());
         mCamera.preview();
     }
 
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
+        mRender.onSurfaceChanged(width, height);
     }
 
     @Override
     public void onDrawFrame(GL10 gl) {
-        if (mSurfaceTexture != null) {
-            mSurfaceTexture.updateTexImage();
-        }
-        mFilter.draw();
+        mRender.onDrawFrame();
     }
 
     @Override
@@ -101,4 +81,8 @@ public class CameraView extends GLSurfaceView implements GLSurfaceView.Renderer 
     }
 
 
+    @Override
+    public void onFrameAvailable() {
+        requestRender();
+    }
 }
