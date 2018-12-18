@@ -8,6 +8,7 @@ import com.astana.learnopengl.camPreview.CameraActivity
 import com.astana.learnopengl.drawCube.GLDrawCube
 import com.astana.learnopengl.drawCube.GLDrawSquare
 import com.astana.learnopengl.drawTriangle.GLDrawTriangle
+import com.astana.learnopengl.fbo.FBOActivity
 import com.astana.learnopengl.texture.DrawTextureRect
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -44,6 +45,11 @@ class MainActivity : AppCompatActivity() {
 
     fun gotoNormalCameraPreview(view: View) {
         val intent = Intent(this, CameraActivity::class.java)
+        startActivity(intent)
+    }
+
+    fun gotoFBORender(view: View) {
+        val intent = Intent(this, FBOActivity::class.java)
         startActivity(intent)
     }
 

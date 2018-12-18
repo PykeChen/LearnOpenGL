@@ -99,6 +99,9 @@ public abstract class BaseFilter {
         mHTexture = GLES20.glGetUniformLocation(mProgram, "vTexture");
     }
 
+    /**
+     * GL相关的初始化,包括:顶点buffer
+     */
     public final void create() {
         initBuffer();
         onCreate();

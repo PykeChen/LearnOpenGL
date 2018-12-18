@@ -1,6 +1,7 @@
 package com.astana.learnopengl.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 
@@ -17,7 +18,25 @@ import java.io.InputStreamReader;
 public class CommonUtils {
 
     /**
-     * 根据资源id, 读取字符串
+     * 通过路径加载Assets中的文本内容
+     */
+    public static String readContentFromAssetsPath(Resources resources, String assetsPath) {
+        StringBuilder result = new StringBuilder();
+        try {
+            InputStream is = resources.getAssets().open(assetsPath);
+            int ch;
+            byte[] buffer = new byte[1024];
+            while (-1 != (ch = is.read(buffer))) {
+                result.append(new String(buffer, 0, ch));
+            }
+        } catch (Exception e) {
+            return null;
+        }
+        return result.toString().replaceAll("\\r\\n", "\n");
+    }
+
+    /**
+     * 根据raw目录下的资源id, 读取字符串
      *
      * @param context
      * @param resourceId
